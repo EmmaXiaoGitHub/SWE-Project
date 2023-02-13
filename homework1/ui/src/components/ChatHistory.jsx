@@ -1,7 +1,10 @@
 import React from "react";
 
-const ChatHistory = ({ history }) => {
-  // TODO: make the history clickable, and can resume history chat
+const ChatHistory = ({ history, setInputValue }) => {
+ // TODO: make the history clickable, and can resume history chat
+  const handleHistoryClick = (input) => {
+    setInputValue(input);
+  };
   return (
     <ul className="history-list">
       {history.map((item, index) => (
