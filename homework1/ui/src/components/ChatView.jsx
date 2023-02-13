@@ -8,19 +8,43 @@ const ChatView = () => {
   const [history, setHistory] = useState([]);
 
   // TODO: load the chat history for the user and render it on the page
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch("./history");
+      const data = await response.json();
+      setHistory(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    // TODO: Send the input to an API to get the response from AI
+  event.preventDefault();
+  // TODO: Send the input to an API to get the response from AI
+  fetch(
+    "/api/response",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ input }),
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      setOutput(data.response);
+      setHistory([...history, { input, output: data.response }]);
+      setInput("");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
-    setOutput("AI's response");
-    setHistory([...history, { input, output }]);
-    setInput("");
-  };
 
   return (
     <div className="chat-view">
