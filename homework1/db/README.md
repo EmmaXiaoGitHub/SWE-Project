@@ -13,3 +13,43 @@ Imagine that you are building a ChatGPT app that allows users to ask questions a
 
 ## Answer:
 TODO: you need to add your sql query to each task here.
+
+CREATE DATABASE chatgpt;
+USE chatgpt;
+
+CREATE TABLE questions (
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    question VARCHAR(255) NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+USE chatgpt;
+
+CREATE TABLE questions (
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    question VARCHAR(255) NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE answers (
+    id INT NOT NULL AUTO_INCREMENT,
+    question_id INT NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (question_id) REFERENCES questions(id)
+);
+
+CREATE TABLE users (
+    id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
