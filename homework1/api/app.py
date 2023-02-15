@@ -70,10 +70,28 @@ def login():
 
     # TODO: Add code here to check the username and password against the database
     # Return error if it doesn't match
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        sql = "SELECT username, password, email FROM users WHERE username=%s AND password=%s"
+        cursor.execute(sql, (username, password))
+        user = cursor.fetchone()
+
+        # Close the database connection
+        cursor.close()
+        conn.close()
+
+        if not user:
+            return jsonify({"error": "Incorrect username or password."})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
     # TODO: If the username and password are correct, set the username in the session
+    session['username'] = username
 
-    return
+    return jsonify({"username": username, "error": None})
 
 
 # TODO: Create logout api
