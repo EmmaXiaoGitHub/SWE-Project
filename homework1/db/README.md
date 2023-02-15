@@ -14,21 +14,26 @@ Imagine that you are building a ChatGPT app that allows users to ask questions a
 ## Answer:
 TODO: you need to add your sql query to each task here.
 
-# Connect to the database
-conn = mysql.connect()
-cursor = conn.cursor()
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL
+);
 
-# Create the chat_history table if it doesn't exist
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS chat_history (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  user_id VARCHAR(255),
-  question TEXT,
-  response TEXT
-)
-""")
+CREATE TABLE questions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  question TEXT NOT NULL,
+  timestamp TIMESTAMP NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
-# Close the database connection
-cursor.close()
-conn.close()
+CREATE TABLE chat_history (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  question TEXT NOT NULL,
+  response TEXT NOT NULL,
+  timestamp TIMESTAMP NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id
 
