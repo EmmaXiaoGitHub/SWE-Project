@@ -14,42 +14,21 @@ Imagine that you are building a ChatGPT app that allows users to ask questions a
 ## Answer:
 TODO: you need to add your sql query to each task here.
 
-CREATE DATABASE chatgpt;
-USE chatgpt;
+# Connect to the database
+conn = mysql.connect()
+cursor = conn.cursor()
 
-CREATE TABLE questions (
-    id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    question VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
+# Create the chat_history table if it doesn't exist
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS chat_history (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id VARCHAR(255),
+  question TEXT,
+  response TEXT
+)
+""")
 
-USE chatgpt;
+# Close the database connection
+cursor.close()
+conn.close()
 
-CREATE TABLE questions (
-    id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    question VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE answers (
-    id INT NOT NULL AUTO_INCREMENT,
-    question_id INT NOT NULL,
-    answer VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (question_id) REFERENCES questions(id)
-);
-
-CREATE TABLE users (
-    id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
-);
