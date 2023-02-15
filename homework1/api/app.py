@@ -99,7 +99,11 @@ def login():
 # then return a result
 @app.route("/logout", methods=["POST"])
 def logout():
-    return
+    username = request.json.get('username')
+    if 'username' in session and session['username'] == username:
+        session.pop('username')
+
+    return jsonify({"message": "Successfully logged out."})
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -121,6 +125,19 @@ def chat():
     response = response.replace("You: ", "")
 
     # TODO save the chat history into database
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        sql = "INSERT INTO chat_history (user_id, question, response) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (user_id, question, response))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
     # Return the response as JSON
     return jsonify({"response": response})
@@ -129,7 +146,23 @@ def chat():
 # TODO: Create chat_history API that returns chat history for the specified user
 @app.route("/chat_history", methods=["POST"])
 def chat_history():
-    return
+    user_id = request.json.get('user_id')
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor()
+
+        sql = "SELECT * FROM chat_history WHERE user_id=%s"
+        cursor.execute(sql, (user_id,))
+        chat_history = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+        
+    except Exception as e:
+        print(f"Error occurred while fetching chat history: {e}")
+        return jsonify({"success": False, "error": "Error occurred while fetching chat history"})
+
+    return jsonify({"success": True, "chat_history": chat_history})
 
 
 
